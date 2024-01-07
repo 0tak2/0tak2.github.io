@@ -11,7 +11,8 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"deploy": "npm run build && npx gh-pages -d build -t true"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
@@ -39,6 +40,7 @@
 	"dependencies": {
 		"@monaco-editor/loader": "^1.4.0",
 		"@sveltejs/adapter-static": "^3.0.1",
+		"gh-pages": "^6.1.1",
 		"monaco-editor": "^0.45.0"
 	}
 }
