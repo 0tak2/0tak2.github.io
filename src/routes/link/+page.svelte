@@ -1,6 +1,6 @@
 <svelte:head>
-	<title>Links</title>
-	<meta name="description" content="About this app" />
+	<title>임영택 - 링크</title>
+	<meta name="description" content="임영택 - 링크" />
 </svelte:head>
 
 <script>

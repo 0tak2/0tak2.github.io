@@ -1,6 +1,6 @@
 <svelte:head>
-	<title>About</title>
-	<meta name="description" content="About this app" />
+	<title>임영택 - 포트폴리오</title>
+	<meta name="description" content="임영택 - 포트폴리오" />
 </svelte:head>
 
 <div class="portfolio-container">
