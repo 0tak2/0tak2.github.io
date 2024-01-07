@@ -33,5 +33,6 @@
 
 	h1 {
 		width: 100%;
+		font-weight: 600;
 	}
 </style>

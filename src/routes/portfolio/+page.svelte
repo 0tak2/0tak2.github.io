@@ -52,6 +52,7 @@
 		border: solid 1px black;
 		margin: 1rem;
 		padding: 1rem;
+		padding-bottom: 6rem;
 		background: rgba(255, 255, 255, 1.0);
 	}
 
