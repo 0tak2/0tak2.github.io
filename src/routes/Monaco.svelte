@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import com.tmax.TmaxCloud;
 
 @Getter
-public class Me extends BackendDeveloper {
+public class Me implements BackendDeveloper {
     private final String nameKor = "임영택";
     private final String nameEng = "Youngtaek Lim";
     private final Contact email = EmailContact.of("0tak2.code@gmail.com");
@@ -39,12 +39,13 @@ public class Me extends BackendDeveloper {
             new Interest("Clean Architecture")
     ));
 
-    public Performance work(List<Object> inputs) {
+    @Override
+    public Performance doWork(List<Object> inputs) {
         inputs.add("Responsibility");
         inputs.add("Trust");
         inputs.add("TDD");
         
-        return this.doBest(inputs);
+        return this.doCode(inputs);
     }
 }
 `,
