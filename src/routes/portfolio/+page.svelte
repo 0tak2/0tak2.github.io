@@ -4,12 +4,7 @@
 </svelte:head>
 
 <div class="portfolio-container">
-	<h1>임영택</h1>
-
-	<p class="desc">
-		상상을 컴파일하는<br />
-		백엔드 엔지니어
-	</p>
+	<h1>임영택 Youngtaek Lim</h1>
 
 	<h2>Work</h2>
 
@@ -49,7 +44,6 @@
 
 <style>
 	.portfolio-container {
-		border: solid 1px black;
 		margin: 1rem;
 		padding: 1rem;
 		padding-bottom: 6rem;

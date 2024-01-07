@@ -26,10 +26,6 @@
 			icon: '',
 		},
 	];
-
-	const goTo = (url) => {
-		window.location = url;
-	}
 </script>
 
 <div>
@@ -42,10 +38,10 @@
 
 	<div class="link-container">
 		{#each links as linkItem}
-			<div class="link-item" on:click={() => { goTo(linkItem.url) }}>
+			<a class="link-item" href="{linkItem.url}" target="_blank">
 				<div class="link-title">{linkItem.name}</div>
 				<div class="link-url">{linkItem.url}</div>
-			</div>
+			</a>
 		{/each}
 	</div>
 </div>
@@ -59,16 +55,18 @@
 
 	.link-item {
 		padding: 1rem;
-		height: 120px;
+		height: 110px;
 		border-bottom: solid 0.5px black;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		cursor: pointer;
+		color: rgba(0, 0, 0, 0.7);
 	}
 
 	.link-item:hover {
 		background-color: #E0E3DA;
+		text-decoration-line: none;
 	}
 
 	.link-title {
