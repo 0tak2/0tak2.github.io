@@ -23,6 +23,8 @@
 import java.util.List;
 import java.util.ArrayList;
 
+import com.tmax.TmaxCloud;
+
 @Getter
 public class Me extends BackendDeveloper {
     private final String nameKor = "임영택";
@@ -30,7 +32,7 @@ public class Me extends BackendDeveloper {
     private final Contact email = EmailContact.of("0tak2.code@gmail.com");
     private final Contact github = WebContact.of("https://github.com/0tak2");
     private final Contact blog = WebContact.of("https://archiveyoung.tistory.com/");
-    private Company workAt = "Tmax Cloud";
+    private Company workAt = TmaxCloud.getInstance();
     private List<Interest> interests = new ArrayList(Arrays.asList(
             new Interest("Modern Java"),
             new Interest("Distributed System"),
