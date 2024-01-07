@@ -35,5 +35,10 @@
 		"vite": "^5.0.3",
 		"vitest": "^1.0.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@monaco-editor/loader": "^1.4.0",
+		"@sveltejs/adapter-static": "^3.0.1",
+		"monaco-editor": "^0.45.0"
+	}
 }

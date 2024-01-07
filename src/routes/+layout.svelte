@@ -11,7 +11,7 @@
 	</main>
 
 	<footer>
-		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
+		<p><a href="mailto:0tak2.code@gmail.com">임영택</a>, 2024</p>
 	</footer>
 </div>
 
@@ -23,7 +23,7 @@
 	}
 
 	main {
-		flex: 1;
+		flex: 0.7;
 		display: flex;
 		flex-direction: column;
 		padding: 1rem;
