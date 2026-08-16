@@ -54,3 +54,14 @@ test("기존 연락처와 링크를 보존한다", () => {
     assert.ok(html.includes(value), `누락된 링크 또는 연락처: ${value}`);
   }
 });
+
+test("SUIT 고딕과 외부 스타일시트로 반응형 화면을 구성한다", async () => {
+  const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
+
+  assert.match(html, /<link rel="stylesheet" href="\.\/styles\.css">/);
+  assert.doesNotMatch(html, /cdn\.tailwindcss\.com/);
+  assert.doesNotMatch(css, /font-family:[^;]*(?:Georgia|Times|(?<!-)serif)/i);
+  assert.match(css, /font-family:\s*"SUIT"/);
+  assert.match(css, /min-height:\s*100svh/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+});
