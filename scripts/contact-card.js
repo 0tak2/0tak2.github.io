@@ -18,6 +18,17 @@ export function getDraggedPosition({ startCard, startPointer, pointer, width, he
   });
 }
 
+export function getKeyboardDelta(key, step = 12) {
+  const deltas = {
+    ArrowUp: { x: 0, y: -step },
+    ArrowDown: { x: 0, y: step },
+    ArrowLeft: { x: -step, y: 0 },
+    ArrowRight: { x: step, y: 0 },
+  };
+
+  return deltas[key] ?? null;
+}
+
 export function setupContactCard(card) {
   if (!card) return;
 
@@ -40,6 +51,7 @@ export function setupContactCard(card) {
       viewportHeight: window.innerHeight,
     });
 
+    card.style.position = "fixed";
     card.style.inset = "auto";
     card.style.left = `${position.x}px`;
     card.style.top = `${position.y}px`;
@@ -105,11 +117,20 @@ export function setupContactCard(card) {
     placeCard(rect.left, rect.top);
   };
 
+  const onKeyDown = (event) => {
+    const delta = getKeyboardDelta(event.key);
+    if (!delta) return;
+    const rect = card.getBoundingClientRect();
+    placeCard(rect.left + delta.x, rect.top + delta.y);
+    event.preventDefault();
+  };
+
   handle.addEventListener("pointerdown", onPointerDown);
   handle.addEventListener("pointermove", onPointerMove);
   handle.addEventListener("pointerup", onPointerUp);
   handle.addEventListener("pointercancel", onPointerUp);
   handle.addEventListener("click", onClick);
+  handle.addEventListener("keydown", onKeyDown);
   window.addEventListener("resize", onResize, { passive: true });
 }
 
@@ -124,9 +145,20 @@ export function setupDraggableOverlay(card) {
   let startCard = { x: 0, y: 0 };
 
   const placeCard = (x, y) => {
+    const rect = card.getBoundingClientRect();
+    const position = clampPosition({
+      x,
+      y,
+      width: rect.width,
+      height: rect.height,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+    });
+
+    card.style.position = "fixed";
     card.style.inset = "auto";
-    card.style.left = `${x}px`;
-    card.style.top = `${y}px`;
+    card.style.left = `${position.x}px`;
+    card.style.top = `${position.y}px`;
   };
 
   const onPointerDown = (event) => {
@@ -161,8 +193,19 @@ export function setupDraggableOverlay(card) {
     pointerId = null;
   };
 
+  const onKeyDown = (event) => {
+    const delta = getKeyboardDelta(event.key);
+    if (!delta) return;
+    const rect = card.getBoundingClientRect();
+    topOverlayLayer += 1;
+    card.style.zIndex = String(topOverlayLayer);
+    placeCard(rect.left + delta.x, rect.top + delta.y);
+    event.preventDefault();
+  };
+
   handle.addEventListener("pointerdown", onPointerDown);
   handle.addEventListener("pointermove", onPointerMove);
   handle.addEventListener("pointerup", onPointerUp);
   handle.addEventListener("pointercancel", onPointerUp);
+  handle.addEventListener("keydown", onKeyDown);
 }

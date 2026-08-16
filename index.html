@@ -175,25 +175,29 @@
     </address>
   </footer>
 
-  <figure class="pet-card" data-pet-overlay data-pet="1">
-    <button class="pet-card__handle" type="button" aria-label="순택이 첫 번째 사진 이동">순택이 / 01 <span aria-hidden="true">⠿</span></button>
-    <img src="./assets/soontaek-01.jpeg" alt="소파에 누워 옆을 바라보는 순택이">
-  </figure>
+  <div class="pet-overlays">
+    <figure class="pet-card" data-pet-overlay data-pet="1">
+      <button class="pet-card__handle" type="button" aria-label="순택이 첫 번째 사진, 화살표 키로 이동" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight">순택이 / 01 <span aria-hidden="true">⠿</span></button>
+      <img src="./assets/soontaek-01.jpeg" alt="소파에 누워 옆을 바라보는 순택이">
+    </figure>
 
-  <figure class="pet-card" data-pet-overlay data-pet="2">
-    <button class="pet-card__handle" type="button" aria-label="순택이 두 번째 사진 이동">순택이 / 02 <span aria-hidden="true">⠿</span></button>
-    <img src="./assets/soontaek-02.jpeg" alt="의자에 앉아 정면을 바라보는 순택이">
-  </figure>
+    <figure class="pet-card" data-pet-overlay data-pet="3">
+      <button class="pet-card__handle" type="button" aria-label="순택이 세 번째 사진, 화살표 키로 이동" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight">순택이 / 03 <span aria-hidden="true">⠿</span></button>
+      <img src="./assets/soontaek-03.jpeg" alt="카메라 가까이에서 잠든 순택이">
+    </figure>
 
-  <figure class="pet-card" data-pet-overlay data-pet="3">
-    <button class="pet-card__handle" type="button" aria-label="순택이 세 번째 사진 이동">순택이 / 03 <span aria-hidden="true">⠿</span></button>
-    <img src="./assets/soontaek-03.jpeg" alt="카메라 가까이에서 잠든 순택이">
-  </figure>
+    <figure class="pet-card" data-pet-overlay data-pet="2">
+      <button class="pet-card__handle" type="button" aria-label="순택이 두 번째 사진, 화살표 키로 이동" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight">순택이 / 02 <span aria-hidden="true">⠿</span></button>
+      <img src="./assets/soontaek-02.jpeg" alt="의자에 앉아 정면을 바라보는 순택이">
+    </figure>
+  </div>
 
   <aside class="contact-card" data-contact-card aria-label="연락처 바로가기">
     <button
       class="contact-card__handle"
       type="button"
+      aria-label="Contact Me 연락처, 화살표 키로 이동"
+      aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight"
       aria-controls="contact-panel"
       aria-expanded="true">
       <span aria-hidden="true">⠿</span>

@@ -390,6 +390,15 @@ address {
   overflow-wrap: anywhere;
 }
 
+.site-links a,
+.contact-card__panel a {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 0.35rem;
+}
+
 .pet-card {
   position: fixed;
   z-index: 15;
@@ -462,11 +471,11 @@ address {
   .hero__content {
     grid-template-columns: 1fr;
     gap: 1rem;
-    padding-block: 3.25rem 2rem;
+    padding-block: 1.25rem;
   }
 
   .hero__name {
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.25rem;
   }
 
   .hero h1 {
@@ -474,7 +483,7 @@ address {
   }
 
   .hero__tv {
-    min-height: 22rem;
+    min-height: clamp(14rem, 32svh, 18rem);
   }
 
   .experience,
@@ -487,24 +496,42 @@ address {
     gap: 1.25rem;
   }
 
+  .pet-overlays {
+    width: min(100%, var(--content));
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-inline: auto;
+    padding: 2rem var(--page-padding) 0;
+  }
+
   .pet-card {
-    width: 6.75rem;
+    position: relative;
+    inset: auto;
+    width: 100%;
   }
 
-  .pet-card[data-pet="1"] {
-    left: 0.65rem;
-    top: 10rem;
+  .pet-card[data-pet] {
+    inset: auto;
+  }
+}
+
+@media (max-width: 48rem) and (max-height: 42rem) {
+  .scroll-cue {
+    display: none;
   }
 
-  .pet-card[data-pet="2"] {
-    right: 0.65rem;
-    top: 24rem;
+  .hero h1 {
+    font-size: clamp(2rem, 9vw, 2.75rem);
   }
 
-  .pet-card[data-pet="3"] {
-    left: 0.5rem;
-    top: 20rem;
-    bottom: auto;
+  .hero__statement {
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .hero__tv {
+    min-height: 11.5rem;
   }
 }
 

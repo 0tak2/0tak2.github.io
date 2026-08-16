@@ -1,5 +1,6 @@
 import { getTvTransform } from "./tv-motion.js";
 import { setupContactCard, setupDraggableOverlay } from "./contact-card.js";
+import { shouldDestroyOnPageHide } from "./page-lifecycle.js";
 
 const container = document.querySelector("#hero-tv");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -65,14 +66,18 @@ async function setupTv() {
     if (reducedMotion) update();
     else introFrame = requestAnimationFrame(animateIntro);
 
-    addEventListener("pagehide", () => {
+    const onPageHide = (event) => {
+      if (!shouldDestroyOnPageHide(event.persisted)) return;
       cancelAnimationFrame(introFrame);
       removeEventListener("pointermove", onPointerMove);
       removeEventListener("scroll", onScroll);
+      removeEventListener("pagehide", onPageHide);
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
       scene.destroy();
-    }, { once: true });
+    };
+
+    addEventListener("pagehide", onPageHide);
   } catch (error) {
     console.warn("3D 브라운관을 표시하지 못해 정적 화면으로 대체합니다.", error);
   }

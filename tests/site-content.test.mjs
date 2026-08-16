@@ -4,6 +4,21 @@ import { readFile } from "node:fs/promises";
 
 const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
 
+const getCssAtRule = (css, header) => {
+  const start = css.indexOf(header);
+  if (start < 0) return "";
+  const openingBrace = css.indexOf("{", start);
+  let depth = 0;
+
+  for (let index = openingBrace; index < css.length; index += 1) {
+    if (css[index] === "{") depth += 1;
+    if (css[index] === "}") depth -= 1;
+    if (depth === 0) return css.slice(start, index + 1);
+  }
+
+  return "";
+};
+
 test("핵심 문구와 이름을 첫 화면에 둔다", () => {
   assert.match(html, /<header[^>]+class="hero"/);
   assert.match(html, /임영택/);
@@ -142,6 +157,41 @@ test("순택이 사진 세 장을 독립 오버레이로 제공한다", () => {
     assert.match(html, new RegExp(`src="\\./assets/${image}"`));
   }
   assert.equal(html.match(/class="pet-card__handle"/g)?.length, 3);
+});
+
+test("모바일 순택이 카드는 문서 흐름에 1, 3, 2 순서로 놓인다", async () => {
+  const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
+  const overlays = html.match(/<div class="pet-overlays">[\s\S]*?<\/div>/)?.[0] ?? "";
+  const mobile = getCssAtRule(css, "@media (max-width: 48rem)");
+
+  assert.ok(overlays.indexOf('data-pet="1"') < overlays.indexOf('data-pet="3"'));
+  assert.ok(overlays.indexOf('data-pet="3"') < overlays.indexOf('data-pet="2"'));
+  assert.match(mobile, /\.pet-overlays\s*\{[\s\S]*display:\s*grid/);
+  assert.match(mobile, /\.pet-card\s*\{[\s\S]*position:\s*relative;[\s\S]*inset:\s*auto/);
+  assert.match(mobile, /\.pet-card\[data-pet\]\s*\{[\s\S]*inset:\s*auto/);
+});
+
+test("모바일과 짧은 화면에서 hero와 TV 높이를 줄인다", async () => {
+  const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
+  const mobile = getCssAtRule(css, "@media (max-width: 48rem)");
+  const shortMobile = getCssAtRule(css, "@media (max-width: 48rem) and (max-height: 42rem)");
+
+  assert.match(mobile, /\.hero__content\s*\{[\s\S]*padding-block:\s*1\.25rem/);
+  assert.match(mobile, /\.hero__name\s*\{[\s\S]*margin-bottom:\s*1\.25rem/);
+  assert.match(mobile, /\.hero__tv\s*\{[\s\S]*min-height:\s*clamp\(14rem,\s*32svh,\s*18rem\)/);
+  assert.match(shortMobile, /\.scroll-cue\s*\{[\s\S]*display:\s*none/);
+  assert.match(shortMobile, /\.hero h1\s*\{[\s\S]*font-size:\s*clamp\(2rem,\s*9vw,\s*2\.75rem\)/);
+  assert.match(shortMobile, /\.hero__statement\s*\{[\s\S]*margin-top:\s*0\.75rem;[\s\S]*line-height:\s*1\.6/);
+  assert.match(shortMobile, /\.hero__tv\s*\{[\s\S]*min-height:\s*11\.5rem/);
+});
+
+test("오버레이는 화살표 이동 안내를 제공하고 주요 링크는 44px 터치 영역을 갖는다", async () => {
+  const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
+  const shortcuts = html.match(/aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight"/g) ?? [];
+
+  assert.equal(shortcuts.length, 4);
+  assert.equal(html.match(/화살표 키로 이동/g)?.length, 4);
+  assert.match(css, /\.site-links a,[\s\S]*\.contact-card__panel a\s*\{[\s\S]*min-height:\s*2\.75rem;[\s\S]*display:\s*flex;[\s\S]*align-items:\s*center;[\s\S]*justify-content:\s*center;[\s\S]*padding-inline:\s*0\.35rem/);
 });
 
 test("기간을 검정색 큰 글씨로 표시하고 세 번째 순택이를 왼쪽 가장자리에 둔다", async () => {
