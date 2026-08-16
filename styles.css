@@ -200,6 +200,7 @@ a:focus-visible {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: clamp(0.55rem, 0.85vw, 0.72rem);
   line-height: 1.7;
+  white-space: pre-wrap;
 }
 
 .tv-fallback__dial {

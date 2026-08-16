@@ -1,10 +1,7 @@
 import * as THREE from "three";
 import { TV_PROFILE, getBottomButtonPositions } from "./tv-profile.js";
-import {
-  VIDEO_SYNTH_COLORS,
-  getVideoSynthFrame,
-  shouldRenderScreenFrame,
-} from "./tv-screen-motion.js";
+import { getVideoSynthFrame } from "./tv-screen-motion.js";
+import { createScreenFrameRenderer, drawVideoSynthFrame } from "./tv-screen-render.js";
 
 function createRoundedRectShape(width, height, radius) {
   const x = -width / 2;
@@ -41,68 +38,15 @@ function createScreenMaterial({ reducedMotion }) {
 
   function update(elapsedMs) {
     const frame = getVideoSynthFrame(elapsedMs);
-    const { width, height } = canvas;
-
-    if (hasRendered) feedbackContext.drawImage(canvas, 0, 0);
-
-    context.globalCompositeOperation = "source-over";
-    context.fillStyle = hasRendered ? "rgba(5, 7, 16, 0.32)" : "#050710";
-    context.fillRect(0, 0, width, height);
-
-    context.globalCompositeOperation = "screen";
-    frame.fields.forEach((field, index) => {
-      const color = VIDEO_SYNTH_COLORS[index];
-      const x = field.x * width;
-      const y = field.y * height;
-      const radius = field.radius * Math.max(width, height);
-      const gradient = context.createRadialGradient(x, y, 0, x, y, radius);
-      gradient.addColorStop(0, `${color}cc`);
-      gradient.addColorStop(0.5, `${color}66`);
-      gradient.addColorStop(1, "transparent");
-      context.fillStyle = gradient;
-      context.fillRect(0, 0, width, height);
+    drawVideoSynthFrame({
+      context,
+      canvas,
+      feedbackCanvas,
+      feedbackContext,
+      frame,
+      elapsedMs,
+      hasRendered,
     });
-
-    context.globalCompositeOperation = "source-over";
-    if (hasRendered) {
-      context.save();
-      context.globalAlpha = 0.18;
-      context.translate(width / 2, height / 2);
-      context.scale(frame.feedbackScale, frame.feedbackScale);
-      context.translate(-width / 2, -height / 2);
-      context.drawImage(feedbackCanvas, 0, 0);
-      context.restore();
-    }
-
-    const jitter = Math.round((frame.glitch - 0.5) * 18);
-    const codeLines = [
-      "const vision = team.idea;",
-      "export default compile(vision);",
-      "render(signal + color);",
-      "// synchronized imagination",
-    ];
-    context.font = "30px ui-monospace, SFMono-Regular, Menlo, monospace";
-    codeLines.forEach((line, index) => {
-      const y = 120 + index * 104;
-      context.fillStyle = "rgba(255, 47, 179, 0.72)";
-      context.fillText(line, 70 + jitter, y);
-      context.fillStyle = "rgba(22, 231, 255, 0.72)";
-      context.fillText(line, 70 - jitter, y + 2);
-      context.fillStyle = "rgba(255, 255, 255, 0.82)";
-      context.fillText(line, 70, y + 1);
-    });
-
-    context.fillStyle = `rgba(255, 255, 255, ${0.035 + frame.glitch * 0.05})`;
-    for (let index = 0; index < 90; index += 1) {
-      const x = (elapsedMs * (index + 3) * 0.043) % width;
-      const y = (elapsedMs * (index + 11) * 0.071) % height;
-      context.fillRect(x, y, 1 + (index % 3), 1);
-    }
-
-    context.fillStyle = "rgba(0, 0, 0, 0.22)";
-    for (let y = frame.scanlineOffset * 8 - 8; y < height; y += 8) {
-      context.fillRect(0, y, width, 2);
-    }
 
     texture.needsUpdate = true;
     hasRendered = true;
@@ -224,8 +168,11 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
   let destroyed = false;
   let animationFrame = 0;
   let animationStartedAt = null;
-  let hasScreenRendered = false;
-  let lastScreenFrameMs = 0;
+  const screenFrameRenderer = createScreenFrameRenderer({
+    reducedMotion,
+    screenSurface,
+    renderScene: () => renderer.render(scene, camera),
+  });
 
   function elapsedMsAt(time) {
     if (animationStartedAt === null) animationStartedAt = time;
@@ -233,17 +180,8 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
   }
 
   function renderScreenFrame(elapsedMs) {
-    if (!active || destroyed || !shouldRenderScreenFrame({
-      elapsedMs,
-      lastFrameMs: lastScreenFrameMs,
-      reducedMotion,
-      hasRendered: hasScreenRendered,
-    })) return;
-
-    screenSurface.update(elapsedMs);
-    hasScreenRendered = true;
-    lastScreenFrameMs = elapsedMs;
-    renderer.render(scene, camera);
+    if (!active || destroyed) return;
+    screenFrameRenderer.render(elapsedMs);
   }
 
   function requestScreenFrame() {
@@ -261,7 +199,7 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderScreenFrame(elapsedMsAt(performance.now()));
+    if (!destroyed) screenFrameRenderer.renderAfterResize();
   }
 
   function update({ x, y, rotationX, rotationY, scale }) {
