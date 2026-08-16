@@ -41,6 +41,11 @@ test("기존 경력과 교육 내용을 보존한다", () => {
 
   const academy = html.match(/<article class="experience">[\s\S]*?Apple Developer Academy @ POSTECH[\s\S]*?<\/article>/)?.[0] ?? "";
   assert.match(academy, /2025\. 03 ~ 2025\. 12/);
+  assert.match(academy, /Apple 생태계 어플리케이션 개발/);
+  assert.match(academy, /SwiftUI, Swift Data, ARKit, RealityKit/);
+  assert.match(academy, /최종 프로젝트 &lt;찍자&gt;/);
+  assert.match(academy, /연결하는 스트리밍 카메라 앱/);
+  assert.match(academy, /https:\/\/apps\.apple\.com\/kr\/app\//);
 });
 
 test("기존 연락처와 링크를 보존한다", () => {
@@ -49,12 +54,20 @@ test("기존 연락처와 링크를 보존한다", () => {
     "https://github.com/0tak2",
     "https://archiveyoung.tistory.com",
     "https://0tak2.github.io/T0L/",
+    "https://www.instagram.com/0tag2/",
+    "https://www.linkedin.com/in/0tag2/",
   ]) {
     assert.ok(html.includes(value), `누락된 링크 또는 연락처: ${value}`);
   }
 
-  assert.match(html, /<address>[\s\S]*?<span>서울<\/span>/);
+  assert.match(html, /<address>[\s\S]*?<span>이메일<\/span>/);
+  assert.doesNotMatch(html, /<span>서울<\/span>/);
   assert.doesNotMatch(html, /마포구/);
+});
+
+test("별도 기술 나열 섹션을 표시하지 않는다", () => {
+  assert.doesNotMatch(html, /id="stack"/);
+  assert.doesNotMatch(html, /class="stack-list"/);
 });
 
 test("SUIT 고딕과 외부 스타일시트로 반응형 화면을 구성한다", async () => {
@@ -75,12 +88,14 @@ test("Three.js import map과 모듈 진입점을 연결한다", () => {
   assert.match(html, /class="tv-fallback"/);
 });
 
-test("Contact Me 오버레이는 이메일과 접근 가능한 토글을 제공한다", () => {
+test("Contact Me 오버레이는 기본으로 열리고 연락처 링크를 제공한다", () => {
   assert.match(html, /data-contact-card/);
   assert.match(html, /aria-controls="contact-panel"/);
-  assert.match(html, /aria-expanded="false"/);
-  assert.match(html, /id="contact-panel"[^>]*hidden/);
+  assert.match(html, /aria-expanded="true"/);
+  assert.doesNotMatch(html, /id="contact-panel"[^>]*hidden/);
   assert.match(html, /href="mailto:0tak2\.code@gmail\.com"/);
+  assert.match(html, /href="https:\/\/www\.instagram\.com\/0tag2\/"/);
+  assert.match(html, /href="https:\/\/www\.linkedin\.com\/in\/0tag2\/"/);
 });
 
 test("검색과 공유 메타데이터를 제공한다", () => {
