@@ -3,113 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
   <title>임영택</title>
 </head>
 <body>
-  <div class="container mx-auto py-16">
-    <div class="flex items-center flex-wrap p-4">
-      <h1 class="flex-auto text-5xl font-bold underline decoration-4 decoration-sky-500 hover:decoration-dashed">임영택</h1>
-      <div class="flex-none text-xl font-bold text-sky-700 cursor-progress">상상을 컴파일하는 개발자</div>
-    </div>
+  <header class="hero" aria-labelledby="hero-title">
+    <nav class="site-links" aria-label="외부 링크">
+      <a href="https://github.com/0tak2" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://archiveyoung.tistory.com" target="_blank" rel="noopener noreferrer">Blog</a>
+      <a href="https://0tak2.github.io/T0L/" target="_blank" rel="noopener noreferrer">TIL</a>
+    </nav>
 
-    <ul class="px-4 pt-8 pb-2 text-lg">
-      <li>📍 서울시 마포구</li>
-      <li>✉️ 0tak2.code@gmail.com</li>
-    </ul>
-
-    <div class="flex px-4 pt-2 pb-12">
-      <a
-        class="rounded-md h-8 w-24 mr-1 shadow-md bg-sky-600 text-white text-center flex items-center justify-center"
-        href="https://github.com/0tak2"
-        target="_blank">
-
-        <span>Github</span>
-      </a>
-      <a
-        class="rounded-md h-8 w-24 mx-1 shadow-md bg-sky-600 text-white text-center flex items-center justify-center"
-        href="https://archiveyoung.tistory.com"
-        target="_blank">
-
-        <span>Blog</span>
-      </a>
-      <a
-        class="rounded-md h-8 w-24 ml-1 shadow-md bg-sky-600 text-white text-center flex items-center justify-center"
-        href="https://0tak2.github.io/T0L/"
-        target="_blank">
-
-        <span>TIL</span>
-      </a>
-    </div>
-
-    <div class="px-4 py-10">
-      <h1 class="flex-auto text-4xl font-bold underline decoration-4 decoration-wavy decoration-sky-500 hover:decoration-dashed pb-8">
-        Work
-      </h1>
-
-      <div class="pb-6">
-        <h2 class="text-2xl font-semibold hover:underline decoration-4 decoration-sky-500">티맥스 클라우드</h2>
-        <div class="text-lg">2023. 10 ~ 2024. 11</div>
-        <div class="text-lg">CL2연구본부</div>
-        <ul class="pt-2">
-          <li>화상회의 서버 개발</li>
-          <li>앱서버(NodeJS/Express) 개발, 유지보수</li>
-          <li>자료공유서버(Java/Spring) 개발, 유지보수</li>
-          <li>테스트 자동화 (미디어서버 성능 테스트 - WebRTC, HLS 등)</li>
-        </ul>
+    <div class="hero__content">
+      <div class="hero__copy">
+        <p class="hero__name">임영택 <span>YOUNGTAEK LIM</span></p>
+        <h1 id="hero-title">상상을 컴파일하는 엔지니어.</h1>
+        <p class="hero__statement">기술과 비즈니스의 경계를 넘어<br>팀의 비전을 실현합니다.</p>
       </div>
 
-      <div class="pb-6">
-        <h2 class="text-2xl font-semibold hover:underline decoration-4 decoration-sky-500">솔트룩스</h2>
-        <div class="text-lg">2023. 06 ~ 2023. 09</div>
-        <div class="text-lg">인턴십</div>
-        <ul class="pt-2">
-          <li>자사 언어모델 LUXIA(루시아) 파인튜닝을 위한 지도학습 데이터 셋 구축</li>
-          <li>프롬프트 엔지니어링</li>
-          <li>팀내 업무 도구 작성 및 운영</li>
-        </ul>
+      <div id="hero-tv" class="hero__tv" role="img" aria-label="코드가 표시되는 3D 브라운관 TV">
+        <div class="tv-fallback" aria-hidden="true">
+          <div class="tv-fallback__screen">
+            <code>const vision = team.idea;<br>compile(vision);</code>
+          </div>
+          <span class="tv-fallback__dial"></span>
+          <span class="tv-fallback__dial"></span>
+        </div>
       </div>
     </div>
 
-    <div class="px-4 py-8">
-      <h1 class="flex-auto text-4xl font-bold underline decoration-4 decoration-wavy decoration-sky-500 hover:decoration-dashed pb-8">
-        Education
-      </h1>
+    <a class="scroll-cue" href="#work">아래로</a>
+  </header>
 
-      <div class="pb-6">
-        <h2 class="text-2xl font-semibold hover:underline decoration-4 decoration-sky-500">Apple Developer Academy @ POSTECH<br> Cohort 2025</h2>
-        <div class="text-lg">2025. 03 ~</div>
-      </div>
+  <main>
+    <section id="work" class="section" aria-labelledby="work-title">
+      <h2 id="work-title">경력</h2>
 
-      <div class="pb-6">
-        <h2 class="text-2xl font-semibold hover:underline decoration-4 decoration-sky-500">한국소프트웨어산업협회<br> 기업멤버십 SW캠프</h2>
-        <div class="text-lg">2022. 11 ~ 2023. 06</div>
-        <ul class="pt-2">
-          <li>Java, Java EE(Servlet, JSP), Spring Framework, MySQL 등 Java 기반 웹 개발</li>
-          <li>JavaScript, jQuery, Vue.js</li>
-          <li>우수인재상 수상 (한국소프트웨어산업협회장)</li>
-        </ul>
-      </div>
+      <article class="experience" data-company="ppb">
+        <time datetime="2026-03">2026. 03 ~</time>
+        <div>
+          <h3>피피비스튜디오스</h3>
+          <p>컬러렌즈 O2O 서버 및 백오피스 풀스택 개발</p>
+        </div>
+      </article>
 
-      <h2 class="text-2xl font-semibold hover:underline decoration-4 decoration-sky-500">홍익대학교</h2>
-      <div class="text-lg">2017. 03 ~ 2023. 02</div>
-      <div class="text-lg">미술대학 예술학과</div>
-      <div class="text-lg">융합 문화예술경영전공</div>
-    </div>
-    
+      <article class="experience">
+        <time>2023. 10 ~ 2024. 11</time>
+        <div>
+          <h3>티맥스 클라우드</h3>
+          <p>CL2연구본부</p>
+          <ul>
+            <li>화상회의 서버 개발</li>
+            <li>앱서버(NodeJS/Express) 개발, 유지보수</li>
+            <li>자료공유서버(Java/Spring) 개발, 유지보수</li>
+            <li>테스트 자동화 (미디어서버 성능 테스트 - WebRTC, HLS 등)</li>
+          </ul>
+        </div>
+      </article>
 
-  </div>
+      <article class="experience">
+        <time>2023. 06 ~ 2023. 09</time>
+        <div>
+          <h3>솔트룩스</h3>
+          <p>인턴십</p>
+          <ul>
+            <li>자사 언어모델 LUXIA(루시아) 파인튜닝을 위한 지도학습 데이터 셋 구축</li>
+            <li>프롬프트 엔지니어링</li>
+            <li>팀내 업무 도구 작성 및 운영</li>
+          </ul>
+        </div>
+      </article>
+    </section>
 
-  <!-- tailwindcss -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        fontFamily: {
-          'sans': ['Pretendard']
-        }
-      }
-    }
-  </script>
+    <section id="stack" class="section" aria-labelledby="stack-title">
+      <h2 id="stack-title">기술</h2>
+      <p class="stack-list">JavaScript / TypeScript · Go · Node.js · NestJS · Java · Spring</p>
+    </section>
+
+    <section id="education" class="section" aria-labelledby="education-title">
+      <h2 id="education-title">교육</h2>
+
+      <article class="experience">
+        <time>2025. 03 ~ 2025. 12</time>
+        <div>
+          <h3>Apple Developer Academy @ POSTECH<br>Cohort 2025</h3>
+        </div>
+      </article>
+
+      <article class="experience">
+        <time>2022. 11 ~ 2023. 06</time>
+        <div>
+          <h3>한국소프트웨어산업협회<br>기업멤버십 SW캠프</h3>
+          <ul>
+            <li>Java, Java EE(Servlet, JSP), Spring Framework, MySQL 등 Java 기반 웹 개발</li>
+            <li>JavaScript, jQuery, Vue.js</li>
+            <li>우수인재상 수상 (한국소프트웨어산업협회장)</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="experience">
+        <time>2017. 03 ~ 2023. 02</time>
+        <div>
+          <h3>홍익대학교</h3>
+          <p>미술대학 예술학과</p>
+          <p>융합 문화예술경영전공</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer id="contact" class="section">
+    <h2>연락처</h2>
+    <address>
+      <span>서울시 마포구</span>
+      <a href="mailto:0tak2.code@gmail.com">0tak2.code@gmail.com</a>
+    </address>
+  </footer>
 </body>
 </html>
