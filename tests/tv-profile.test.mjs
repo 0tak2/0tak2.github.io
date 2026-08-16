@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 
 import { TV_PROFILE, getBottomButtonPositions } from "../scripts/tv-profile.js";
 
-test("90년대 한국형 실버 CRT의 외형을 정의한다", () => {
-  assert.equal(TV_PROFILE.bodyColor, 0xb9bab6);
+test("검은 CRT 본체와 중앙 유리 화면 프로필을 사용한다", () => {
+  assert.equal(TV_PROFILE.bodyColor, 0x0b0b0b);
+  assert.equal(TV_PROFILE.screenCenterX, 0);
   assert.equal(TV_PROFILE.hasSideSpeaker, true);
   assert.equal(TV_PROFILE.hasAntenna, false);
   assert.equal(TV_PROFILE.hasLegs, false);

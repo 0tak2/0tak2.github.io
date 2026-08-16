@@ -95,6 +95,15 @@ test("Three.js import map과 모듈 진입점을 연결한다", () => {
   assert.match(html, /class="tv-fallback"/);
 });
 
+test("정적 대체 TV도 비디오 신시사이징 화면을 제공한다", async () => {
+  const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
+
+  assert.match(css, /@keyframes\s+video-synth-shift/);
+  assert.match(css, /\.tv-fallback[\s\S]*background:\s*#0b0b0b/);
+  assert.match(css, /prefers-reduced-motion:[\s\S]*\.tv-fallback__screen/);
+  assert.match(html, /코드와 컬러 영상이 표시되는 3D 브라운관 TV/);
+});
+
 test("Contact Me 오버레이는 기본으로 열리고 연락처 링크를 제공한다", () => {
   assert.match(html, /data-contact-card/);
   assert.match(html, /aria-controls="contact-panel"/);

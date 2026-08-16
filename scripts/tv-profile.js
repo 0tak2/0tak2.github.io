@@ -1,10 +1,11 @@
 export const TV_PROFILE = Object.freeze({
-  bodyColor: 0xb9bab6,
+  bodyColor: 0x0b0b0b,
   bodyWidth: 4.5,
   bodyHeight: 3.3,
   bodyDepth: 1.75,
   screenWidth: 3.5,
   screenHeight: 2.18,
+  screenCenterX: 0,
   buttonCount: 6,
   cameraDistance: 8.8,
   restingScale: 0.88,

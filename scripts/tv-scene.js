@@ -1,5 +1,10 @@
 import * as THREE from "three";
 import { TV_PROFILE, getBottomButtonPositions } from "./tv-profile.js";
+import {
+  VIDEO_SYNTH_COLORS,
+  getVideoSynthFrame,
+  shouldRenderScreenFrame,
+} from "./tv-screen-motion.js";
 
 function createRoundedRectShape(width, height, radius) {
   const x = -width / 2;
@@ -18,43 +23,100 @@ function createRoundedRectShape(width, height, radius) {
   return shape;
 }
 
-function createScreenMaterial() {
+function createScreenMaterial({ reducedMotion }) {
   const canvas = document.createElement("canvas");
   canvas.width = 1024;
   canvas.height = 640;
   const context = canvas.getContext("2d");
-
-  context.fillStyle = "#101711";
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  const glow = context.createRadialGradient(512, 280, 20, 512, 280, 560);
-  glow.addColorStop(0, "rgba(115, 215, 138, .18)");
-  glow.addColorStop(1, "rgba(16, 23, 17, 0)");
-  context.fillStyle = glow;
-  context.fillRect(0, 0, canvas.width, canvas.height);
-
-  context.fillStyle = "#a8ecb4";
-  context.font = "34px monospace";
-  [
-    "const vision = team.idea;",
-    "",
-    "export default",
-    "  compile(vision);",
-    "",
-    "// rendering...",
-  ].forEach((line, index) => context.fillText(line, 66, 100 + index * 76));
-
-  context.fillStyle = "rgba(0, 0, 0, .2)";
-  for (let y = 0; y < canvas.height; y += 8) {
-    context.fillRect(0, y, canvas.width, 2);
-  }
+  const feedbackCanvas = document.createElement("canvas");
+  feedbackCanvas.width = canvas.width;
+  feedbackCanvas.height = canvas.height;
+  const feedbackContext = feedbackCanvas.getContext("2d");
+  let hasRendered = false;
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 4;
-  return new THREE.MeshBasicMaterial({ map: texture });
+  const material = new THREE.MeshBasicMaterial({ map: texture });
+
+  function update(elapsedMs) {
+    const frame = getVideoSynthFrame(elapsedMs);
+    const { width, height } = canvas;
+
+    if (hasRendered) feedbackContext.drawImage(canvas, 0, 0);
+
+    context.globalCompositeOperation = "source-over";
+    context.fillStyle = hasRendered ? "rgba(5, 7, 16, 0.32)" : "#050710";
+    context.fillRect(0, 0, width, height);
+
+    context.globalCompositeOperation = "screen";
+    frame.fields.forEach((field, index) => {
+      const color = VIDEO_SYNTH_COLORS[index];
+      const x = field.x * width;
+      const y = field.y * height;
+      const radius = field.radius * Math.max(width, height);
+      const gradient = context.createRadialGradient(x, y, 0, x, y, radius);
+      gradient.addColorStop(0, `${color}cc`);
+      gradient.addColorStop(0.5, `${color}66`);
+      gradient.addColorStop(1, "transparent");
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, width, height);
+    });
+
+    context.globalCompositeOperation = "source-over";
+    if (hasRendered) {
+      context.save();
+      context.globalAlpha = 0.18;
+      context.translate(width / 2, height / 2);
+      context.scale(frame.feedbackScale, frame.feedbackScale);
+      context.translate(-width / 2, -height / 2);
+      context.drawImage(feedbackCanvas, 0, 0);
+      context.restore();
+    }
+
+    const jitter = Math.round((frame.glitch - 0.5) * 18);
+    const codeLines = [
+      "const vision = team.idea;",
+      "export default compile(vision);",
+      "render(signal + color);",
+      "// synchronized imagination",
+    ];
+    context.font = "30px ui-monospace, SFMono-Regular, Menlo, monospace";
+    codeLines.forEach((line, index) => {
+      const y = 120 + index * 104;
+      context.fillStyle = "rgba(255, 47, 179, 0.72)";
+      context.fillText(line, 70 + jitter, y);
+      context.fillStyle = "rgba(22, 231, 255, 0.72)";
+      context.fillText(line, 70 - jitter, y + 2);
+      context.fillStyle = "rgba(255, 255, 255, 0.82)";
+      context.fillText(line, 70, y + 1);
+    });
+
+    context.fillStyle = `rgba(255, 255, 255, ${0.035 + frame.glitch * 0.05})`;
+    for (let index = 0; index < 90; index += 1) {
+      const x = (elapsedMs * (index + 3) * 0.043) % width;
+      const y = (elapsedMs * (index + 11) * 0.071) % height;
+      context.fillRect(x, y, 1 + (index % 3), 1);
+    }
+
+    context.fillStyle = "rgba(0, 0, 0, 0.22)";
+    for (let y = frame.scanlineOffset * 8 - 8; y < height; y += 8) {
+      context.fillRect(0, y, width, 2);
+    }
+
+    texture.needsUpdate = true;
+    hasRendered = true;
+  }
+
+  function dispose() {
+    texture.dispose();
+    material.dispose();
+  }
+
+  return { material, update, dispose };
 }
 
-function createTvModel() {
+function createTvModel({ reducedMotion }) {
   const tv = new THREE.Group();
   const bodyGeometry = new THREE.ExtrudeGeometry(
     createRoundedRectShape(TV_PROFILE.bodyWidth, TV_PROFILE.bodyHeight, 0.22),
@@ -71,8 +133,8 @@ function createTvModel() {
   bodyGeometry.center();
   const bodyMaterial = new THREE.MeshStandardMaterial({
     color: TV_PROFILE.bodyColor,
-    roughness: 0.78,
-    metalness: 0.04,
+    roughness: 0.88,
+    metalness: 0,
   });
   const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
   body.castShadow = true;
@@ -81,9 +143,9 @@ function createTvModel() {
 
   const bezel = new THREE.Mesh(
     new THREE.ShapeGeometry(createRoundedRectShape(3.78, 2.46, 0.22), 16),
-    new THREE.MeshStandardMaterial({ color: 0x383a38, roughness: 0.9 }),
+    new THREE.MeshStandardMaterial({ color: 0x1b1b1b, roughness: 0.92 }),
   );
-  bezel.position.set(-0.18, 0.28, 1.005);
+  bezel.position.set(TV_PROFILE.screenCenterX, 0.28, 1.005);
   tv.add(bezel);
 
   const screenGeometry = new THREE.PlaneGeometry(TV_PROFILE.screenWidth, TV_PROFILE.screenHeight, 32, 22);
@@ -94,11 +156,12 @@ function createTvModel() {
     positions.setZ(index, 0.16 * Math.max(0, 1 - x * x) * Math.max(0, 1 - y * y));
   }
   screenGeometry.computeVertexNormals();
-  const screen = new THREE.Mesh(screenGeometry, createScreenMaterial());
-  screen.position.set(-0.18, 0.28, 1.025);
+  const screenSurface = createScreenMaterial({ reducedMotion });
+  const screen = new THREE.Mesh(screenGeometry, screenSurface.material);
+  screen.position.set(TV_PROFILE.screenCenterX, 0.28, 1.025);
   tv.add(screen);
 
-  const controlMaterial = new THREE.MeshStandardMaterial({ color: 0x555754, roughness: 0.76 });
+  const controlMaterial = new THREE.MeshStandardMaterial({ color: 0x303030, roughness: 0.82 });
   for (const x of getBottomButtonPositions(TV_PROFILE.buttonCount, 0.25)) {
     const button = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.07, 20), controlMaterial);
     button.rotation.x = Math.PI / 2;
@@ -111,7 +174,7 @@ function createTvModel() {
   powerButton.position.set(1.48, -1.22, 1.015);
   tv.add(powerButton);
 
-  const speakerMaterial = new THREE.MeshStandardMaterial({ color: 0x4b4d4b, roughness: 0.95 });
+  const speakerMaterial = new THREE.MeshStandardMaterial({ color: 0x272727, roughness: 0.95 });
   const speaker = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.045, 48), speakerMaterial);
   speaker.rotation.z = Math.PI / 2;
   speaker.position.set(2.35, 0.08, 0.08);
@@ -123,7 +186,7 @@ function createTvModel() {
     tv.add(ring);
   }
 
-  return tv;
+  return { tv, screenSurface };
 }
 
 export function createTvScene(container, { reducedMotion = false } = {}) {
@@ -139,7 +202,7 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   container.append(renderer.domElement);
 
-  const tv = createTvModel();
+  const { tv, screenSurface } = createTvModel({ reducedMotion });
   scene.add(tv);
 
   const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
@@ -159,10 +222,37 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
 
   let active = true;
   let destroyed = false;
+  let animationFrame = 0;
+  let animationStartedAt = null;
+  let hasScreenRendered = false;
+  let lastScreenFrameMs = 0;
 
-  function render() {
-    if (!active || destroyed) return;
+  function elapsedMsAt(time) {
+    if (animationStartedAt === null) animationStartedAt = time;
+    return Math.max(0, time - animationStartedAt);
+  }
+
+  function renderScreenFrame(elapsedMs) {
+    if (!active || destroyed || !shouldRenderScreenFrame({
+      elapsedMs,
+      lastFrameMs: lastScreenFrameMs,
+      reducedMotion,
+      hasRendered: hasScreenRendered,
+    })) return;
+
+    screenSurface.update(elapsedMs);
+    hasScreenRendered = true;
+    lastScreenFrameMs = elapsedMs;
     renderer.render(scene, camera);
+  }
+
+  function requestScreenFrame() {
+    if (!active || destroyed || reducedMotion || animationFrame) return;
+    animationFrame = requestAnimationFrame((time) => {
+      animationFrame = 0;
+      renderScreenFrame(elapsedMsAt(time));
+      requestScreenFrame();
+    });
   }
 
   function resize() {
@@ -171,32 +261,41 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    render();
+    renderScreenFrame(elapsedMsAt(performance.now()));
   }
 
   function update({ x, y, rotationX, rotationY, scale }) {
     tv.position.set(x * 3.7, y * 2.2, 0);
     tv.rotation.set(rotationX, rotationY, 0);
     tv.scale.setScalar(scale * TV_PROFILE.restingScale);
-    render();
+    renderScreenFrame(elapsedMsAt(performance.now()));
   }
 
   function setActive(nextActive) {
     active = nextActive;
-    if (active) render();
+    if (!active && animationFrame) {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+      return;
+    }
+
+    if (active) {
+      renderScreenFrame(elapsedMsAt(performance.now()));
+      requestScreenFrame();
+    }
   }
 
   function destroy() {
     destroyed = true;
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    screenSurface.dispose();
     scene.traverse((object) => {
       object.geometry?.dispose();
       if (Array.isArray(object.material)) {
         object.material.forEach((material) => {
-          material.map?.dispose();
           material.dispose();
         });
       } else {
-        object.material?.map?.dispose();
         object.material?.dispose();
       }
     });
@@ -212,6 +311,7 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
     rotationY: -0.08,
     scale: reducedMotion ? 1 : 0.94,
   });
+  requestScreenFrame();
 
   return { update, resize, setActive, destroy };
 }
