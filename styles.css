@@ -463,7 +463,7 @@ address {
   user-select: none;
 }
 
-@media (max-width: 68rem) {
+@media (max-width: 93rem) {
   .pet-overlays {
     width: min(100%, var(--content));
     display: grid;

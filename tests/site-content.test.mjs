@@ -162,7 +162,7 @@ test("순택이 사진 세 장을 독립 오버레이로 제공한다", () => {
 test("모바일 순택이 카드는 문서 흐름에 1, 3, 2 순서로 놓인다", async () => {
   const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
   const overlays = html.match(/<div class="pet-overlays">[\s\S]*?<\/div>/)?.[0] ?? "";
-  const gutterSafe = getCssAtRule(css, "@media (max-width: 68rem)");
+  const gutterSafe = getCssAtRule(css, "@media (max-width: 93rem)");
 
   assert.ok(overlays.indexOf('data-pet="1"') < overlays.indexOf('data-pet="3"'));
   assert.ok(overlays.indexOf('data-pet="3"') < overlays.indexOf('data-pet="2"'));
