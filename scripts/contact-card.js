@@ -7,6 +7,17 @@ export function clampPosition({ x, y, width, height, viewportWidth, viewportHeig
   };
 }
 
+export function getDraggedPosition({ startCard, startPointer, pointer, width, height, viewportWidth, viewportHeight }) {
+  return clampPosition({
+    x: startCard.x + pointer.x - startPointer.x,
+    y: startCard.y + pointer.y - startPointer.y,
+    width,
+    height,
+    viewportWidth,
+    viewportHeight,
+  });
+}
+
 export function setupContactCard(card) {
   if (!card) return;
 
@@ -49,7 +60,19 @@ export function setupContactCard(card) {
     const deltaX = event.clientX - startPointer.x;
     const deltaY = event.clientY - startPointer.y;
     if (Math.hypot(deltaX, deltaY) > 4) moved = true;
-    if (moved) placeCard(startCard.x + deltaX, startCard.y + deltaY);
+    if (moved) {
+      const rect = card.getBoundingClientRect();
+      const position = getDraggedPosition({
+        startCard,
+        startPointer,
+        pointer: { x: event.clientX, y: event.clientY },
+        width: rect.width,
+        height: rect.height,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+      });
+      placeCard(position.x, position.y);
+    }
   };
 
   const onPointerUp = (event) => {
@@ -88,4 +111,58 @@ export function setupContactCard(card) {
   handle.addEventListener("pointercancel", onPointerUp);
   handle.addEventListener("click", onClick);
   window.addEventListener("resize", onResize, { passive: true });
+}
+
+let topOverlayLayer = 30;
+
+export function setupDraggableOverlay(card) {
+  if (!card) return;
+
+  const handle = card.querySelector(".pet-card__handle");
+  let pointerId = null;
+  let startPointer = { x: 0, y: 0 };
+  let startCard = { x: 0, y: 0 };
+
+  const placeCard = (x, y) => {
+    card.style.inset = "auto";
+    card.style.left = `${x}px`;
+    card.style.top = `${y}px`;
+  };
+
+  const onPointerDown = (event) => {
+    if (event.button !== 0) return;
+    const rect = card.getBoundingClientRect();
+    pointerId = event.pointerId;
+    startPointer = { x: event.clientX, y: event.clientY };
+    startCard = { x: rect.left, y: rect.top };
+    topOverlayLayer += 1;
+    card.style.zIndex = String(topOverlayLayer);
+    handle.setPointerCapture(pointerId);
+  };
+
+  const onPointerMove = (event) => {
+    if (event.pointerId !== pointerId) return;
+    const rect = card.getBoundingClientRect();
+    const position = getDraggedPosition({
+      startCard,
+      startPointer,
+      pointer: { x: event.clientX, y: event.clientY },
+      width: rect.width,
+      height: rect.height,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+    });
+    placeCard(position.x, position.y);
+  };
+
+  const onPointerUp = (event) => {
+    if (event.pointerId !== pointerId) return;
+    if (handle.hasPointerCapture(pointerId)) handle.releasePointerCapture(pointerId);
+    pointerId = null;
+  };
+
+  handle.addEventListener("pointerdown", onPointerDown);
+  handle.addEventListener("pointermove", onPointerMove);
+  handle.addEventListener("pointerup", onPointerUp);
+  handle.addEventListener("pointercancel", onPointerUp);
 }

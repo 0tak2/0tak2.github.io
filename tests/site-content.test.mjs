@@ -92,3 +92,11 @@ test("검색과 공유 메타데이터를 제공한다", () => {
   assert.match(html, /"@type":\s*"Person"/);
   assert.match(html, /"alternateName":\s*"Youngtaek Lim"/);
 });
+
+test("순택이 사진 세 장을 독립 오버레이로 제공한다", () => {
+  assert.equal(html.match(/data-pet-overlay/g)?.length, 3);
+  for (const image of ["soontaek-01.jpeg", "soontaek-02.jpeg", "soontaek-03.jpeg"]) {
+    assert.match(html, new RegExp(`src="\\./assets/${image}"`));
+  }
+  assert.equal(html.match(/class="pet-card__handle"/g)?.length, 3);
+});

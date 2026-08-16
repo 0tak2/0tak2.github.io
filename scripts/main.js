@@ -1,10 +1,11 @@
 import { getTvTransform } from "./tv-motion.js";
-import { setupContactCard } from "./contact-card.js";
+import { setupContactCard, setupDraggableOverlay } from "./contact-card.js";
 
 const container = document.querySelector("#hero-tv");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 setupContactCard(document.querySelector("[data-contact-card]"));
+document.querySelectorAll("[data-pet-overlay]").forEach(setupDraggableOverlay);
 
 async function setupTv() {
   if (!container) return;
