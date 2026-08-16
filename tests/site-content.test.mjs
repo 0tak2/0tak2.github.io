@@ -117,3 +117,13 @@ test("순택이 사진 세 장을 독립 오버레이로 제공한다", () => {
   }
   assert.equal(html.match(/class="pet-card__handle"/g)?.length, 3);
 });
+
+test("기간을 검정색 큰 글씨로 표시하고 세 번째 순택이를 왼쪽 가장자리에 둔다", async () => {
+  const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
+  const timeRule = css.match(/\.experience time\s*\{[\s\S]*?\}/)?.[0] ?? "";
+  const thirdPetRule = css.match(/\.pet-card\[data-pet="3"\]\s*\{[\s\S]*?\}/)?.[0] ?? "";
+
+  assert.match(timeRule, /color:\s*var\(--ink\)/);
+  assert.match(timeRule, /font-size:\s*0\.95rem/);
+  assert.match(thirdPetRule, /left:\s*0\.5rem/);
+});

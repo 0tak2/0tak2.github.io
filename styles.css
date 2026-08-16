@@ -269,9 +269,9 @@ footer.section {
 
 .experience time {
   padding-top: 0.2rem;
-  color: var(--muted);
+  color: var(--ink);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.78rem;
+  font-size: 0.95rem;
   letter-spacing: 0.015em;
 }
 
@@ -300,15 +300,6 @@ footer.section {
   line-height: 1.78;
 }
 
-.stack-list {
-  margin: 0;
-  padding-block: clamp(2rem, 5vw, 3.5rem);
-  border-block: 1px solid var(--line);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: clamp(0.9rem, 1.8vw, 1.25rem);
-  line-height: 1.8;
-}
-
 footer.section {
   margin-top: 0;
 }
@@ -320,6 +311,12 @@ address {
   padding-block: 2rem;
   border-block: 1px solid var(--line);
   font-style: normal;
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.4rem;
 }
 
 [hidden] {
@@ -364,6 +361,8 @@ address {
 }
 
 .contact-card__panel {
+  display: grid;
+  gap: 0.65rem;
   padding: 1rem;
   border-top: 1px solid var(--ink);
   font-size: 0.85rem;
@@ -396,7 +395,7 @@ address {
 }
 
 .pet-card[data-pet="3"] {
-  left: clamp(9rem, 18vw, 15rem);
+  left: 0.5rem;
   bottom: 1.25rem;
   transform: rotate(0.75deg);
 }
@@ -485,7 +484,7 @@ address {
   }
 
   .pet-card[data-pet="3"] {
-    left: 0.65rem;
+    left: 0.5rem;
     top: 38rem;
     bottom: auto;
   }
