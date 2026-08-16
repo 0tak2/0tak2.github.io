@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { TV_PROFILE, getBottomButtonPositions } from "./tv-profile.js";
 
 function createRoundedRectShape(width, height, radius) {
   const x = -width / 2;
@@ -55,75 +56,71 @@ function createScreenMaterial() {
 
 function createTvModel() {
   const tv = new THREE.Group();
-  const bodyGeometry = new THREE.ExtrudeGeometry(createRoundedRectShape(3.7, 2.65, 0.35), {
-    depth: 1.25,
-    bevelEnabled: true,
-    bevelSegments: 5,
-    steps: 1,
-    bevelSize: 0.12,
-    bevelThickness: 0.12,
-    curveSegments: 12,
-  });
+  const bodyGeometry = new THREE.ExtrudeGeometry(
+    createRoundedRectShape(TV_PROFILE.bodyWidth, TV_PROFILE.bodyHeight, 0.22),
+    {
+      depth: TV_PROFILE.bodyDepth,
+      bevelEnabled: true,
+      bevelSegments: 4,
+      steps: 1,
+      bevelSize: 0.08,
+      bevelThickness: 0.08,
+      curveSegments: 8,
+    },
+  );
   bodyGeometry.center();
   const bodyMaterial = new THREE.MeshStandardMaterial({
-    color: 0x0b0b0b,
-    roughness: 0.72,
-    metalness: 0.08,
+    color: TV_PROFILE.bodyColor,
+    roughness: 0.78,
+    metalness: 0.04,
   });
   const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
   body.castShadow = true;
   body.receiveShadow = true;
   tv.add(body);
 
-  const screenGeometry = new THREE.PlaneGeometry(2.5, 1.65, 28, 20);
+  const bezel = new THREE.Mesh(
+    new THREE.ShapeGeometry(createRoundedRectShape(3.78, 2.46, 0.22), 16),
+    new THREE.MeshStandardMaterial({ color: 0x383a38, roughness: 0.9 }),
+  );
+  bezel.position.set(-0.18, 0.28, 1.005);
+  tv.add(bezel);
+
+  const screenGeometry = new THREE.PlaneGeometry(TV_PROFILE.screenWidth, TV_PROFILE.screenHeight, 32, 22);
   const positions = screenGeometry.attributes.position;
   for (let index = 0; index < positions.count; index += 1) {
-    const x = positions.getX(index) / 1.25;
-    const y = positions.getY(index) / 0.825;
-    positions.setZ(index, 0.13 * Math.max(0, 1 - x * x) * Math.max(0, 1 - y * y));
+    const x = positions.getX(index) / (TV_PROFILE.screenWidth / 2);
+    const y = positions.getY(index) / (TV_PROFILE.screenHeight / 2);
+    positions.setZ(index, 0.16 * Math.max(0, 1 - x * x) * Math.max(0, 1 - y * y));
   }
   screenGeometry.computeVertexNormals();
   const screen = new THREE.Mesh(screenGeometry, createScreenMaterial());
-  screen.position.set(-0.32, 0.12, 0.755);
+  screen.position.set(-0.18, 0.28, 1.025);
   tv.add(screen);
 
-  const bezelGeometry = new THREE.RingGeometry(1.04, 1.13, 48);
-  bezelGeometry.scale(1.25, 0.83, 1);
-  const bezel = new THREE.Mesh(bezelGeometry, new THREE.MeshStandardMaterial({ color: 0x1b1b1b, roughness: 0.85 }));
-  bezel.position.set(-0.32, 0.12, 0.73);
-  tv.add(bezel);
-
-  const dialMaterial = new THREE.MeshStandardMaterial({ color: 0xc8c8c8, roughness: 0.38, metalness: 0.28 });
-  for (const y of [0.52, -0.22]) {
-    const dial = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.13, 32), dialMaterial);
-    dial.rotation.x = Math.PI / 2;
-    dial.position.set(1.34, y, 0.78);
-    dial.castShadow = true;
-    tv.add(dial);
+  const controlMaterial = new THREE.MeshStandardMaterial({ color: 0x555754, roughness: 0.76 });
+  for (const x of getBottomButtonPositions(TV_PROFILE.buttonCount, 0.25)) {
+    const button = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.07, 20), controlMaterial);
+    button.rotation.x = Math.PI / 2;
+    button.position.set(x - 0.48, -1.22, 1.01);
+    tv.add(button);
   }
 
-  const slotMaterial = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 1 });
-  for (let index = 0; index < 5; index += 1) {
-    const slot = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.035, 0.035), slotMaterial);
-    slot.position.set(1.33, -0.72 - index * 0.09, 0.75);
-    tv.add(slot);
-  }
+  const powerButton = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.08, 24), controlMaterial);
+  powerButton.rotation.x = Math.PI / 2;
+  powerButton.position.set(1.48, -1.22, 1.015);
+  tv.add(powerButton);
 
-  const legMaterial = new THREE.MeshStandardMaterial({ color: 0x0b0b0b, roughness: 0.8 });
-  for (const x of [-1.25, 1.25]) {
-    const leg = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.62, 0.22), legMaterial);
-    leg.position.set(x, -1.55, 0.02);
-    leg.rotation.z = x < 0 ? -0.16 : 0.16;
-    leg.castShadow = true;
-    tv.add(leg);
-  }
-
-  const antennaMaterial = new THREE.MeshStandardMaterial({ color: 0x181818, roughness: 0.48, metalness: 0.32 });
-  for (const direction of [-1, 1]) {
-    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.035, 1.25, 12), antennaMaterial);
-    antenna.position.set(direction * 0.43, 1.83, -0.08);
-    antenna.rotation.z = direction * -0.45;
-    tv.add(antenna);
+  const speakerMaterial = new THREE.MeshStandardMaterial({ color: 0x4b4d4b, roughness: 0.95 });
+  const speaker = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.045, 48), speakerMaterial);
+  speaker.rotation.z = Math.PI / 2;
+  speaker.position.set(2.35, 0.08, 0.08);
+  tv.add(speaker);
+  for (const radius of [0.2, 0.34, 0.48]) {
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.018, 8, 48), speakerMaterial);
+    ring.rotation.y = Math.PI / 2;
+    ring.position.set(2.38, 0.08, 0.08);
+    tv.add(ring);
   }
 
   return tv;
@@ -132,7 +129,7 @@ function createTvModel() {
 export function createTvScene(container, { reducedMotion = false } = {}) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  camera.position.set(0, 0.05, 7.2);
+  camera.position.set(0, 0.05, TV_PROFILE.cameraDistance);
 
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setClearColor(0x000000, 0);
@@ -156,7 +153,7 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
     new THREE.ShadowMaterial({ color: 0x0b0b0b, opacity: 0.14 }),
   );
   floor.rotation.x = -Math.PI / 2;
-  floor.position.y = -1.9;
+  floor.position.y = -1.65;
   floor.receiveShadow = true;
   scene.add(floor);
 
@@ -180,7 +177,7 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
   function update({ x, y, rotationX, rotationY, scale }) {
     tv.position.set(x * 3.7, y * 2.2, 0);
     tv.rotation.set(rotationX, rotationY, 0);
-    tv.scale.setScalar(scale);
+    tv.scale.setScalar(scale * TV_PROFILE.restingScale);
     render();
   }
 

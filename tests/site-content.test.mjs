@@ -44,7 +44,7 @@ test("기존 경력과 교육 내용을 보존한다", () => {
   assert.match(academy, /Apple 생태계 어플리케이션 개발/);
   assert.match(academy, /SwiftUI, Swift Data, ARKit, RealityKit/);
   assert.match(academy, /최종 프로젝트 &lt;찍자&gt;/);
-  assert.match(academy, /연결하는 스트리밍 카메라 앱/);
+  assert.match(academy, /상대와 연결하는 스트리밍 카메라 앱/);
   assert.match(academy, /https:\/\/apps\.apple\.com\/kr\/app\//);
 });
 
@@ -63,6 +63,11 @@ test("기존 연락처와 링크를 보존한다", () => {
   assert.match(html, /<address>[\s\S]*?<span>이메일<\/span>/);
   assert.doesNotMatch(html, /<span>서울<\/span>/);
   assert.doesNotMatch(html, /마포구/);
+
+  const address = html.match(/<address>[\s\S]*?<\/address>/)?.[0] ?? "";
+  assert.equal(address.match(/class="contact-row"/g)?.length, 3);
+  assert.ok(address.indexOf("이메일") < address.indexOf("LinkedIn"));
+  assert.ok(address.indexOf("LinkedIn") < address.indexOf("Instagram"));
 });
 
 test("별도 기술 나열 섹션을 표시하지 않는다", () => {
@@ -96,6 +101,9 @@ test("Contact Me 오버레이는 기본으로 열리고 연락처 링크를 제�
   assert.match(html, /href="mailto:0tak2\.code@gmail\.com"/);
   assert.match(html, /href="https:\/\/www\.instagram\.com\/0tag2\/"/);
   assert.match(html, /href="https:\/\/www\.linkedin\.com\/in\/0tag2\/"/);
+  const panel = html.match(/id="contact-panel"[\s\S]*?<\/div>/)?.[0] ?? "";
+  assert.ok(panel.indexOf("0tak2.code@gmail.com") < panel.indexOf("LinkedIn"));
+  assert.ok(panel.indexOf("LinkedIn") < panel.indexOf("Instagram"));
 });
 
 test("검색과 공유 메타데이터를 제공한다", () => {
@@ -126,4 +134,6 @@ test("기간을 검정색 큰 글씨로 표시하고 세 번째 순택이를 왼
   assert.match(timeRule, /color:\s*var\(--ink\)/);
   assert.match(timeRule, /font-size:\s*0\.95rem/);
   assert.match(thirdPetRule, /left:\s*0\.5rem/);
+  assert.match(thirdPetRule, /top:\s*calc\(18vh \+ clamp\(/);
+  assert.match(thirdPetRule, /bottom:\s*auto/);
 });
