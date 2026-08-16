@@ -8,7 +8,24 @@ import {
   drawVideoSynthFrame,
 } from "../scripts/tv-screen-render.js";
 
-test("모션 감소 화면은 리사이즈 후에도 정적 texture를 유지한 채 장면을 다시 렌더한다", () => {
+test("거부된 일반 프레임은 texture와 장면을 갱신하지 않고 리사이즈만 장면을 다시 렌더한다", () => {
+  const updates = [];
+  let renders = 0;
+  const screenFrameRenderer = createScreenFrameRenderer({
+    reducedMotion: false,
+    screenSurface: { update: (elapsedMs) => updates.push(elapsedMs) },
+    renderScene: () => { renders += 1; },
+  });
+
+  screenFrameRenderer.render(0);
+  screenFrameRenderer.render(32);
+  screenFrameRenderer.renderAfterResize();
+
+  assert.deepEqual(updates, [0]);
+  assert.equal(renders, 2);
+});
+
+test("모션 감소는 첫 화면 프레임만 렌더한다", () => {
   const updates = [];
   let renders = 0;
   const screenFrameRenderer = createScreenFrameRenderer({
@@ -19,10 +36,9 @@ test("모션 감소 화면은 리사이즈 후에도 정적 texture를 유지한
 
   screenFrameRenderer.render(0);
   screenFrameRenderer.render(100);
-  screenFrameRenderer.renderAfterResize();
 
   assert.deepEqual(updates, [0]);
-  assert.equal(renders, 3);
+  assert.equal(renders, 1);
 });
 
 test("신시사이징 overlay는 코드, 주사선, 노이즈 순으로 그린다", () => {

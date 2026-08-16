@@ -18,15 +18,16 @@ export function createScreenFrameRenderer({ reducedMotion, screenSurface, render
       lastFrameMs: lastScreenFrameMs,
       reducedMotion,
       hasRendered: hasScreenRendered,
-    })) return;
+    })) return false;
 
     screenSurface.update(elapsedMs);
     hasScreenRendered = true;
     lastScreenFrameMs = elapsedMs;
+    return true;
   }
 
   function render(elapsedMs) {
-    refreshScreenTexture(elapsedMs);
+    if (!refreshScreenTexture(elapsedMs)) return;
     renderScene();
   }
 
