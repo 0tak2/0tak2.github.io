@@ -80,3 +80,15 @@ test("Contact Me 오버레이는 이메일과 접근 가능한 토글을 제공�
   assert.match(html, /id="contact-panel"[^>]*hidden/);
   assert.match(html, /href="mailto:0tak2\.code@gmail\.com"/);
 });
+
+test("검색과 공유 메타데이터를 제공한다", () => {
+  assert.match(html, /<title>임영택 \| 상상을 컴파일하는 엔지니어<\/title>/);
+  assert.match(html, /<meta name="description" content="[^"]+">/);
+  assert.match(html, /<link rel="canonical" href="https:\/\/0tak2\.github\.io\/">/);
+  for (const property of ["og:title", "og:description", "og:url", "og:image"]) {
+    assert.match(html, new RegExp(`<meta property="${property}"`));
+  }
+  assert.match(html, /<meta name="twitter:card" content="summary_large_image">/);
+  assert.match(html, /"@type":\s*"Person"/);
+  assert.match(html, /"alternateName":\s*"Youngtaek Lim"/);
+});
