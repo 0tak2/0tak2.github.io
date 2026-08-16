@@ -172,14 +172,15 @@ test("첫 화면은 중성 화이트와 여유 있는 타이포그래피를 사�
   assert.match(statementRule, /letter-spacing:\s*0/);
 });
 
-test("영문 이름을 한국어 이름 오른쪽 위에 배치한다", async () => {
+test("영문 이름을 한국어 이름 오른쪽에 높이 중앙 정렬한다", async () => {
   const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
   const nameRule = css.match(/\.hero__name\s*\{[\s\S]*?\}/)?.[0] ?? "";
   const englishRule = css.match(/\.hero__name span\s*\{[\s\S]*?\}/)?.[0] ?? "";
 
   assert.match(nameRule, /flex-direction:\s*row/);
+  assert.match(nameRule, /align-items:\s*center/);
   assert.match(nameRule, /margin-left:\s*-0\.04em/);
   assert.match(englishRule, /margin-left:\s*0\.65rem/);
-  assert.match(englishRule, /transform:\s*translateY\(-0\.25em\)/);
+  assert.match(englishRule, /transform:\s*none/);
   assert.match(html, /SwiftUI, Swift Data, ARKit, RealityKit, AVFoundation/);
 });

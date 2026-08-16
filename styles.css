@@ -91,7 +91,7 @@ a:focus-visible {
 .hero__name {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   margin: 0 0 clamp(2.5rem, 7vh, 5.5rem);
   margin-left: -0.04em;
   font-size: clamp(1.8rem, 3.2vw, 2.8rem);
@@ -102,7 +102,7 @@ a:focus-visible {
 
 .hero__name span {
   margin-left: 0.65rem;
-  transform: translateY(-0.25em);
+  transform: none;
   color: var(--muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: clamp(0.65rem, 0.9vw, 0.78rem);
