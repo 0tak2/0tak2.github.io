@@ -1,6 +1,6 @@
 import { getTvTransform } from "./tv-motion.js";
 import { setupContactCard, setupDraggableOverlay } from "./contact-card.js";
-import { shouldDestroyOnPageHide } from "./page-lifecycle.js";
+import { createPageHideHandler } from "./page-lifecycle.js";
 
 const container = document.querySelector("#hero-tv");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -66,8 +66,7 @@ async function setupTv() {
     if (reducedMotion) update();
     else introFrame = requestAnimationFrame(animateIntro);
 
-    const onPageHide = (event) => {
-      if (!shouldDestroyOnPageHide(event.persisted)) return;
+    const onPageHide = createPageHideHandler(() => {
       cancelAnimationFrame(introFrame);
       removeEventListener("pointermove", onPointerMove);
       removeEventListener("scroll", onScroll);
@@ -75,7 +74,7 @@ async function setupTv() {
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
       scene.destroy();
-    };
+    });
 
     addEventListener("pagehide", onPageHide);
   } catch (error) {

@@ -2,6 +2,10 @@ import * as THREE from "three";
 import { TV_PROFILE, getBottomButtonPositions } from "./tv-profile.js";
 import { getVideoSynthFrame } from "./tv-screen-motion.js";
 import { createScreenFrameRenderer, drawVideoSynthFrame } from "./tv-screen-render.js";
+import { disposeSceneResources } from "./scene-resources.js";
+
+const INK_COLOR = 0x0b0b0b;
+const PAPER_COLOR = 0xfefefe;
 
 function createRoundedRectShape(width, height, radius) {
   const x = -width / 2;
@@ -54,7 +58,6 @@ function createScreenMaterial({ reducedMotion }) {
 
   function dispose() {
     texture.dispose();
-    material.dispose();
   }
 
   return { material, update, dispose };
@@ -139,7 +142,7 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
   camera.position.set(0, 0.05, TV_PROFILE.cameraDistance);
 
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setClearColor(0x000000, 0);
+  renderer.setClearColor(INK_COLOR, 0);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.shadowMap.enabled = true;
@@ -149,11 +152,11 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
   const { tv, screenSurface } = createTvModel({ reducedMotion });
   scene.add(tv);
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
+  const keyLight = new THREE.DirectionalLight(PAPER_COLOR, 3.2);
   keyLight.position.set(-4, 5, 7);
   keyLight.castShadow = true;
   scene.add(keyLight);
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x222222, 1.9));
+  scene.add(new THREE.HemisphereLight(PAPER_COLOR, 0x222222, 1.9));
 
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(8, 5),
@@ -224,19 +227,11 @@ export function createTvScene(container, { reducedMotion = false } = {}) {
   }
 
   function destroy() {
+    if (destroyed) return;
     destroyed = true;
     if (animationFrame) cancelAnimationFrame(animationFrame);
     screenSurface.dispose();
-    scene.traverse((object) => {
-      object.geometry?.dispose();
-      if (Array.isArray(object.material)) {
-        object.material.forEach((material) => {
-          material.dispose();
-        });
-      } else {
-        object.material?.dispose();
-      }
-    });
+    disposeSceneResources(scene);
     renderer.dispose();
     renderer.domElement.remove();
   }

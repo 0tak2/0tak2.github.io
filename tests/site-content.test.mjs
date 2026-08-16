@@ -162,13 +162,13 @@ test("순택이 사진 세 장을 독립 오버레이로 제공한다", () => {
 test("모바일 순택이 카드는 문서 흐름에 1, 3, 2 순서로 놓인다", async () => {
   const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
   const overlays = html.match(/<div class="pet-overlays">[\s\S]*?<\/div>/)?.[0] ?? "";
-  const mobile = getCssAtRule(css, "@media (max-width: 48rem)");
+  const gutterSafe = getCssAtRule(css, "@media (max-width: 68rem)");
 
   assert.ok(overlays.indexOf('data-pet="1"') < overlays.indexOf('data-pet="3"'));
   assert.ok(overlays.indexOf('data-pet="3"') < overlays.indexOf('data-pet="2"'));
-  assert.match(mobile, /\.pet-overlays\s*\{[\s\S]*display:\s*grid/);
-  assert.match(mobile, /\.pet-card\s*\{[\s\S]*position:\s*relative;[\s\S]*inset:\s*auto/);
-  assert.match(mobile, /\.pet-card\[data-pet\]\s*\{[\s\S]*inset:\s*auto/);
+  assert.match(gutterSafe, /\.pet-overlays\s*\{[\s\S]*display:\s*grid/);
+  assert.match(gutterSafe, /\.pet-card\s*\{[\s\S]*position:\s*relative;[\s\S]*inset:\s*auto/);
+  assert.match(gutterSafe, /\.pet-card\[data-pet\]\s*\{[\s\S]*inset:\s*auto/);
 });
 
 test("모바일과 짧은 화면에서 hero와 TV 높이를 줄인다", async () => {
@@ -183,6 +183,19 @@ test("모바일과 짧은 화면에서 hero와 TV 높이를 줄인다", async ()
   assert.match(shortMobile, /\.hero h1\s*\{[\s\S]*font-size:\s*clamp\(2rem,\s*9vw,\s*2\.75rem\)/);
   assert.match(shortMobile, /\.hero__statement\s*\{[\s\S]*margin-top:\s*0\.75rem;[\s\S]*line-height:\s*1\.6/);
   assert.match(shortMobile, /\.hero__tv\s*\{[\s\S]*min-height:\s*11\.5rem/);
+  assert.ok(
+    css.lastIndexOf("@media (max-width: 48rem) and (max-height: 42rem)")
+      > css.lastIndexOf("@media (max-width: 24rem)"),
+    "짧은 화면 규칙이 좁은 화면 규칙보다 뒤에서 적용되어야 한다",
+  );
+});
+
+test("Three.js 장면도 생 흰색과 생 검정 대신 공통 근사색을 사용한다", async () => {
+  const source = await readFile(new URL("../scripts/tv-scene.js", import.meta.url), "utf8");
+
+  assert.doesNotMatch(source, /0x(?:000000|ffffff)\b/i);
+  assert.match(source, /0x0b0b0b/);
+  assert.match(source, /0xfefefe/);
 });
 
 test("오버레이는 화살표 이동 안내를 제공하고 주요 링크는 44px 터치 영역을 갖는다", async () => {
