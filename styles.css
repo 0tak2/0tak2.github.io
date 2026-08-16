@@ -322,6 +322,58 @@ address {
   font-style: normal;
 }
 
+[hidden] {
+  display: none !important;
+}
+
+.contact-card {
+  position: fixed;
+  z-index: 20;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  width: min(18rem, calc(100vw - 2rem));
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+
+.contact-card__handle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border: 0;
+  border-radius: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.035em;
+  cursor: grab;
+  touch-action: none;
+}
+
+.contact-card__handle:active {
+  cursor: grabbing;
+}
+
+.contact-card__handle:focus-visible {
+  outline: 2px solid var(--paper);
+  outline-offset: -0.35rem;
+}
+
+.contact-card__panel {
+  padding: 1rem;
+  border-top: 1px solid var(--ink);
+  font-size: 0.85rem;
+}
+
+.contact-card__panel a {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 48rem) {
   .hero {
     min-height: 100svh;

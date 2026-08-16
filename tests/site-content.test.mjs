@@ -72,3 +72,11 @@ test("Three.js import map과 모듈 진입점을 연결한다", () => {
   assert.match(html, /id="hero-tv"/);
   assert.match(html, /class="tv-fallback"/);
 });
+
+test("Contact Me 오버레이는 이메일과 접근 가능한 토글을 제공한다", () => {
+  assert.match(html, /data-contact-card/);
+  assert.match(html, /aria-controls="contact-panel"/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.match(html, /id="contact-panel"[^>]*hidden/);
+  assert.match(html, /href="mailto:0tak2\.code@gmail\.com"/);
+});
