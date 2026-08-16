@@ -139,3 +139,28 @@ test("기간을 검정색 큰 글씨로 표시하고 세 번째 순택이를 왼
   assert.match(thirdPetRule, /top:\s*calc\(18vh \+ clamp\(/);
   assert.match(thirdPetRule, /bottom:\s*auto/);
 });
+
+test("첫 화면은 중성 화이트와 여유 있는 타이포그래피를 사용한다", async () => {
+  const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
+  const siteLinksRule = css.match(/\.site-links\s*\{[\s\S]*?\}/)?.[0] ?? "";
+  const nameRule = css.match(/\.hero__name\s*\{[\s\S]*?\}/)?.[0] ?? "";
+  const englishNameRule = css.match(/\.hero__name span\s*\{[\s\S]*?\}/)?.[0] ?? "";
+  const titleRule = css.match(/\.hero h1\s*\{[\s\S]*?\}/)?.[0] ?? "";
+  const statementRule = css.match(/\.hero__statement\s*\{[\s\S]*?\}/)?.[0] ?? "";
+  const fontWeights = [...css.matchAll(/font-weight:\s*(\d+)/g)].map((match) => Number(match[1]));
+
+  assert.match(css, /--paper:\s*#fefefe/);
+  assert.doesNotMatch(css, /#(?:fff|ffffff)\b/i);
+  assert.ok(fontWeights.every((weight) => [300, 400, 500, 700].includes(weight)));
+  assert.match(siteLinksRule, /letter-spacing:\s*0\.055em/);
+  assert.match(nameRule, /font-weight:\s*700/);
+  assert.match(nameRule, /line-height:\s*1\.2/);
+  assert.match(nameRule, /letter-spacing:\s*-0\.01em/);
+  assert.match(englishNameRule, /letter-spacing:\s*0\.09em/);
+  assert.match(titleRule, /font-weight:\s*700/);
+  assert.match(titleRule, /line-height:\s*1\.25/);
+  assert.match(titleRule, /letter-spacing:\s*-0\.01em/);
+  assert.match(statementRule, /font-weight:\s*400/);
+  assert.match(statementRule, /line-height:\s*2/);
+  assert.match(statementRule, /letter-spacing:\s*0/);
+});
