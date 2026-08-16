@@ -6,9 +6,20 @@ import {
   shouldRenderScreenFrame,
 } from "../scripts/tv-screen-motion.js";
 
+test("비디오 신시사이징 색상 계약은 변경할 수 없다", () => {
+  assert.equal(Object.isFrozen(VIDEO_SYNTH_COLORS), true);
+  assert.throws(() => {
+    VIDEO_SYNTH_COLORS[0] = "#000000";
+  }, TypeError);
+  assert.deepEqual(VIDEO_SYNTH_COLORS, ["#ff2fb3", "#16e7ff", "#ffe94a", "#4937ff"]);
+});
+
 test("비디오 신시사이징 프레임은 결정적이고 값 범위를 지킨다", () => {
   assert.deepEqual(VIDEO_SYNTH_COLORS, ["#ff2fb3", "#16e7ff", "#ffe94a", "#4937ff"]);
   assert.deepEqual(getVideoSynthFrame(1234), getVideoSynthFrame(1234));
+  assert.deepEqual(getVideoSynthFrame(-1), getVideoSynthFrame(0));
+  assert.deepEqual(getVideoSynthFrame(Number.POSITIVE_INFINITY), getVideoSynthFrame(0));
+  assert.deepEqual(getVideoSynthFrame(Number.NaN), getVideoSynthFrame(0));
 
   const frame = getVideoSynthFrame(987654);
   assert.equal(frame.fields.length, 4);

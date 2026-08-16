@@ -1,4 +1,4 @@
-export const VIDEO_SYNTH_COLORS = ["#ff2fb3", "#16e7ff", "#ffe94a", "#4937ff"];
+export const VIDEO_SYNTH_COLORS = Object.freeze(["#ff2fb3", "#16e7ff", "#ffe94a", "#4937ff"]);
 
 const normalizeElapsedMs = (elapsedMs) => (
   Number.isFinite(elapsedMs) ? Math.max(0, elapsedMs) : 0
