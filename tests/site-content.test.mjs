@@ -108,6 +108,13 @@ test("Contact Me 오버레이는 기본으로 열리고 연락처 링크를 제�
   assert.ok(panel.indexOf("LinkedIn") < panel.indexOf("Instagram"));
 });
 
+test("Contact Me는 15rem 너비와 모바일 제한을 유지한다", async () => {
+  const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
+  const contactRule = css.match(/\.contact-card\s*\{[\s\S]*?\}/)?.[0] ?? "";
+
+  assert.match(contactRule, /width:\s*min\(15rem,\s*calc\(100vw - 2rem\)\)/);
+});
+
 test("검색과 공유 메타데이터를 제공한다", () => {
   assert.match(html, /<title>임영택 \| 상상을 컴파일하는 엔지니어<\/title>/);
   assert.match(html, /<meta name="description" content="[^"]+">/);

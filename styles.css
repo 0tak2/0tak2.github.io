@@ -326,7 +326,7 @@ address {
   z-index: 20;
   right: 1.25rem;
   bottom: 1.25rem;
-  width: min(18rem, calc(100vw - 2rem));
+  width: min(15rem, calc(100vw - 2rem));
   border: 1px solid var(--ink);
   background: var(--paper);
 }
