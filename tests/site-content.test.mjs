@@ -45,7 +45,6 @@ test("기존 경력과 교육 내용을 보존한다", () => {
 
 test("기존 연락처와 링크를 보존한다", () => {
   for (const value of [
-    "서울시 마포구",
     "0tak2.code@gmail.com",
     "https://github.com/0tak2",
     "https://archiveyoung.tistory.com",
@@ -53,6 +52,9 @@ test("기존 연락처와 링크를 보존한다", () => {
   ]) {
     assert.ok(html.includes(value), `누락된 링크 또는 연락처: ${value}`);
   }
+
+  assert.match(html, /<address>[\s\S]*?<span>서울<\/span>/);
+  assert.doesNotMatch(html, /마포구/);
 });
 
 test("SUIT 고딕과 외부 스타일시트로 반응형 화면을 구성한다", async () => {
