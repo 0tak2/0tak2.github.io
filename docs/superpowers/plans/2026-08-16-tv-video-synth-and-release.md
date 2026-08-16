@@ -17,8 +17,8 @@
 - 비디오 신시사이징은 마젠타·시안·옐로·블루 컬러 필드, 피드백 잔상, 약한 RGB 글리치, 주사선과 노이즈를 포함한다.
 - 기존 코드는 컬러 모션 위에 남으며 완전한 가독성보다 코드의 존재 인식을 우선한다.
 - 화면 프레임 간격은 최소 `33ms`이고, 화면 밖과 모션 감소 환경에서는 연속 갱신하지 않는다.
-- `임영택`과 `YOUNGTAEK LIM`은 같은 행이며 영문 이름은 오른쪽 위 윗첨자 형태다.
-- `.hero__name`은 `margin-left: -0.04em`, 영문 이름은 `margin-left: 0.65rem`과 `transform: translateY(-0.25em)`을 사용한다.
+- `임영택`과 `YOUNGTAEK LIM`은 같은 행에서 높이 중앙을 맞춘다.
+- `.hero__name`은 `align-items: center`와 `margin-left: -0.04em`, 영문 이름은 `margin-left: 0.65rem`과 `transform: none`을 사용한다.
 - Apple Developer Academy 기술 목록은 `SwiftUI, Swift Data, ARKit, RealityKit, AVFoundation`이다.
 - 세 JPEG에서는 GPS/위치정보만 제거하고 카메라 모델, 촬영 시각과 다른 비위치 EXIF를 보존한다. 이미지를 재압축·리사이즈·색상 보정하지 않는다.
 - 기존 배경 `#fefefe`, 허용 글자 굵기 `300`/`400`/`500`/`700`, Contact Me 너비 `15rem`, 링크와 콘텐츠를 유지한다.
@@ -40,15 +40,16 @@
 - [ ] **Step 1: 실패하는 콘텐츠·CSS 계약 테스트 작성**
 
 ```js
-test("영문 이름을 한국어 이름 오른쪽 위에 배치한다", async () => {
+test("영문 이름을 한국어 이름 오른쪽에 높이 중앙 정렬한다", async () => {
   const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
   const nameRule = css.match(/\.hero__name\s*\{[\s\S]*?\}/)?.[0] ?? "";
   const englishRule = css.match(/\.hero__name span\s*\{[\s\S]*?\}/)?.[0] ?? "";
 
   assert.match(nameRule, /flex-direction:\s*row/);
+  assert.match(nameRule, /align-items:\s*center/);
   assert.match(nameRule, /margin-left:\s*-0\.04em/);
   assert.match(englishRule, /margin-left:\s*0\.65rem/);
-  assert.match(englishRule, /transform:\s*translateY\(-0\.25em\)/);
+  assert.match(englishRule, /transform:\s*none/);
   assert.match(html, /SwiftUI, Swift Data, ARKit, RealityKit, AVFoundation/);
 });
 ```
@@ -64,13 +65,13 @@ Expected: 기존 세로 이름 구조와 AVFoundation 누락 때문에 FAIL
 ```css
 .hero__name {
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   margin-left: -0.04em;
 }
 
 .hero__name span {
   margin-left: 0.65rem;
-  transform: translateY(-0.25em);
+  transform: none;
 }
 ```
 
@@ -218,7 +219,7 @@ texture.needsUpdate = true;
 
 - [ ] **Step 5: CSS 대체 화면과 접근 가능한 설명 수정**
 
-대체 본체를 `#0b0b0b`로 바꾸고 화면 배경에 네 색상의 radial-gradient를 겹친다. `@keyframes video-synth-shift`로 `background-position`과 `filter: hue-rotate()`를 움직이고, 모션 감소 media query에서 `animation: none`을 명시한다. `index.html`의 TV 설명은 `코드와 컬러 영상이 표시되는 3D 브라운관 TV`로 바꾼다.
+대체 본체를 `#0b0b0b`로 바꾸고 유리 영역의 좌우 inset을 같은 값으로 지정해 3D 화면처럼 가로 중앙에 맞춘다. 화면 배경에는 네 색상의 radial-gradient를 겹친다. `@keyframes video-synth-shift`로 `background-position`과 `filter: hue-rotate()`를 움직이고, 모션 감소 media query에서 `animation: none`을 명시한다. 기존 실버 폴백 스타일은 남기지 않는다. `index.html`의 TV 설명은 `코드와 컬러 영상이 표시되는 3D 브라운관 TV`로 바꾼다.
 
 - [ ] **Step 6: 통합 검증**
 
