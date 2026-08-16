@@ -68,6 +68,8 @@ test("기존 연락처와 링크를 보존한다", () => {
   assert.equal(address.match(/class="contact-row"/g)?.length, 3);
   assert.ok(address.indexOf("이메일") < address.indexOf("LinkedIn"));
   assert.ok(address.indexOf("LinkedIn") < address.indexOf("Instagram"));
+  assert.match(address, /<span>LinkedIn<\/span>[\s\S]*?>@0tag2<\/a>/);
+  assert.match(address, /<span>Instagram<\/span>[\s\S]*?>@0tag2<\/a>/);
 });
 
 test("별도 기술 나열 섹션을 표시하지 않는다", () => {
