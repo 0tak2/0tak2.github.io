@@ -64,6 +64,39 @@ const hasXmpGpsToken = (bytes, start, end) => {
   return XMP_GPS_TOKENS.some((token) => text.includes(token));
 };
 
+const validateStartOfScan = (bytes, start, end) => {
+  requireRange(start, 1, end, "SOS component count");
+  const componentCount = bytes[start];
+  if (componentCount < 1 || componentCount > 4) fail("SOS component count가 올바르지 않습니다");
+  const expectedLength = 1 + componentCount * 2 + 3;
+  if (end - start !== expectedLength) fail("SOS header 길이가 올바르지 않습니다");
+};
+
+const findMarkerAfterScan = (bytes, start) => {
+  let offset = start;
+
+  while (offset < bytes.length) {
+    if (bytes[offset] !== JPEG_MARKER_PREFIX) {
+      offset += 1;
+      continue;
+    }
+
+    const markerStart = offset;
+    while (offset < bytes.length && bytes[offset] === JPEG_MARKER_PREFIX) offset += 1;
+    requireRange(offset, 1, bytes.length, "scan marker");
+    const marker = bytes[offset];
+
+    if (marker === 0x00 || (marker >= 0xd0 && marker <= 0xd7)) {
+      offset += 1;
+      continue;
+    }
+
+    return markerStart;
+  }
+
+  fail("EOI 없이 scan data가 끝났습니다");
+};
+
 export function hasLocationMetadata(bytes) {
   if (!(bytes instanceof Uint8Array)) fail("Uint8Array가 필요합니다");
   requireRange(0, 2, bytes.length, "SOI marker");
@@ -96,9 +129,13 @@ export function hasLocationMetadata(bytes) {
       }
     }
 
-    if (marker === START_OF_SCAN) return false;
+    if (marker === START_OF_SCAN) {
+      validateStartOfScan(bytes, payloadStart, payloadEnd);
+      offset = findMarkerAfterScan(bytes, payloadEnd);
+      continue;
+    }
     offset = payloadEnd;
   }
 
-  fail("EOI 또는 SOS marker가 없습니다");
+  fail("EOI marker가 없습니다");
 }
