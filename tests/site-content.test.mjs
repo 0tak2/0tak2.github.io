@@ -65,3 +65,10 @@ test("SUIT 고딕과 외부 스타일시트로 반응형 화면을 구성한다"
   assert.match(css, /min-height:\s*100svh/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
 });
+
+test("Three.js import map과 모듈 진입점을 연결한다", () => {
+  assert.match(html, /"three":\s*"https:\/\/cdn\.jsdelivr\.net\/npm\/three@0\.180\.0\/build\/three\.module\.js"/);
+  assert.match(html, /<script type="module" src="\.\/scripts\/main\.js"><\/script>/);
+  assert.match(html, /id="hero-tv"/);
+  assert.match(html, /class="tv-fallback"/);
+});

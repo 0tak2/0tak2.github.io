@@ -9,9 +9,9 @@ test("clamp는 값을 범위 안에 둔다", () => {
 });
 
 test("TV는 진입 후 머물고 스크롤 시 퇴장한다", () => {
-  const entering = getTvTransform({ scrollProgress: 0, pointerX: 0, pointerY: 0, reducedMotion: false });
-  const resting = getTvTransform({ scrollProgress: 0.25, pointerX: 0, pointerY: 0, reducedMotion: false });
-  const leaving = getTvTransform({ scrollProgress: 1, pointerX: 0, pointerY: 0, reducedMotion: false });
+  const entering = getTvTransform({ introProgress: 0, scrollProgress: 0, pointerX: 0, pointerY: 0, reducedMotion: false });
+  const resting = getTvTransform({ introProgress: 1, scrollProgress: 0, pointerX: 0, pointerY: 0, reducedMotion: false });
+  const leaving = getTvTransform({ introProgress: 1, scrollProgress: 1, pointerX: 0, pointerY: 0, reducedMotion: false });
 
   assert.ok(entering.x > 1);
   assert.equal(resting.x, 0);

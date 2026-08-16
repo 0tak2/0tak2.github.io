@@ -1,6 +1,6 @@
 export const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-export function getTvTransform({ scrollProgress, pointerX, pointerY, reducedMotion }) {
+export function getTvTransform({ introProgress = 1, scrollProgress, pointerX, pointerY, reducedMotion }) {
   if (reducedMotion) {
     return {
       x: 0,
@@ -12,7 +12,7 @@ export function getTvTransform({ scrollProgress, pointerX, pointerY, reducedMoti
   }
 
   const progress = clamp(scrollProgress, 0, 1);
-  const enter = clamp(progress / 0.2, 0, 1);
+  const enter = clamp(introProgress, 0, 1);
   const exit = clamp((progress - 0.55) / 0.45, 0, 1);
 
   return {
