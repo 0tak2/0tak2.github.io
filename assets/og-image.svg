@@ -1,32 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif">
   <rect width="1200" height="630" fill="#fdfdfd"/>
   <rect x="42" y="42" width="1116" height="546" fill="none" stroke="#0b0b0b" stroke-width="2"/>
   <line x1="74" y1="126" x2="1126" y2="126" stroke="#0b0b0b" stroke-width="1"/>
 
   <g fill="#0b0b0b">
-    <text x="76" y="102" font-size="24" font-weight="750" letter-spacing="-0.6">임영택</text>
-    <text x="76" y="245" font-size="67" font-weight="800" letter-spacing="-3">상상을 컴파일하는</text>
-    <text x="76" y="326" font-size="67" font-weight="800" letter-spacing="-3">엔지니어.</text>
-    <text x="78" y="402" font-size="27" font-weight="500" letter-spacing="-0.5">기술과 비즈니스의 경계를 넘어</text>
-    <text x="78" y="443" font-size="27" font-weight="500" letter-spacing="-0.5">팀의 비전을 실현합니다.</text>
-  </g>
-
-  <g transform="translate(825 204) rotate(-4)">
-    <ellipse cx="120" cy="264" rx="146" ry="22" fill="#0b0b0b" opacity="0.13"/>
-    <rect x="-10" y="0" width="280" height="224" rx="31" fill="#0b0b0b"/>
-    <rect x="16" y="25" width="190" height="145" rx="26" fill="#111a13" stroke="#fdfdfd" stroke-opacity="0.42"/>
-    <g fill="#a8ecb4" font-size="13">
-      <text x="38" y="66">const vision = team.idea;</text>
-      <text x="38" y="104">export default</text>
-      <text x="38" y="127">  compile(vision);</text>
-      <text x="38" y="156">// rendering...</text>
-    </g>
-    <circle cx="237" cy="66" r="17" fill="none" stroke="#fdfdfd" stroke-opacity="0.72" stroke-width="7"/>
-    <circle cx="237" cy="121" r="17" fill="none" stroke="#fdfdfd" stroke-opacity="0.72" stroke-width="7"/>
-    <line x1="44" y1="218" x2="30" y2="255" stroke="#0b0b0b" stroke-width="13"/>
-    <line x1="218" y1="218" x2="232" y2="255" stroke="#0b0b0b" stroke-width="13"/>
-    <line x1="105" y1="-4" x2="73" y2="-72" stroke="#0b0b0b" stroke-width="7"/>
-    <line x1="151" y1="-4" x2="187" y2="-72" stroke="#0b0b0b" stroke-width="7"/>
+    <text x="76" y="102" font-size="24" font-weight="700" letter-spacing="0px">임영택</text>
+    <text x="76" y="284" font-size="72" font-weight="700" letter-spacing="0px">상상을 컴파일하는 엔지니어.</text>
+    <text x="78" y="393" font-size="27" font-weight="500" letter-spacing="0px">기술과 비즈니스의 경계를 넘어</text>
+    <text x="78" y="436" font-size="27" font-weight="500" letter-spacing="0px">팀의 비전을 실현합니다.</text>
   </g>
 
   <text x="76" y="554" fill="#0b0b0b" opacity="0.64" font-size="16" letter-spacing="1.4">YOUNGTAEK LIM · 0TAK2.GITHUB.IO</text>
