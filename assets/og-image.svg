@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif">
+  <rect width="1200" height="630" fill="#fdfdfd"/>
+  <rect x="42" y="42" width="1116" height="546" fill="none" stroke="#0b0b0b" stroke-width="2"/>
+  <line x1="74" y1="126" x2="1126" y2="126" stroke="#0b0b0b" stroke-width="1"/>
+
+  <g fill="#0b0b0b">
+    <text x="76" y="102" font-size="24" font-weight="700" letter-spacing="0px">임영택</text>
+    <text x="76" y="284" font-size="72" font-weight="700" letter-spacing="0px">상상을 컴파일하는 엔지니어.</text>
+    <text x="78" y="393" font-size="27" font-weight="500" letter-spacing="0px">기술과 비즈니스의 경계를 넘어</text>
+    <text x="78" y="436" font-size="27" font-weight="500" letter-spacing="0px">팀의 비전을 실현합니다.</text>
+  </g>
+
+  <text x="76" y="554" fill="#0b0b0b" opacity="0.64" font-size="16" letter-spacing="1.4">YOUNGTAEK LIM · 0TAK2.GITHUB.IO</text>
+</svg>
